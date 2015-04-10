@@ -3,6 +3,7 @@
 %{
     #include <stdio.h>
     #include "shell.h"
+    void yyerror(char *s);
 %}
 
 /* metacharacters */
@@ -22,7 +23,7 @@
 
 
 %%
-line:   WORD
+line: WORD
 
 
 
@@ -32,3 +33,6 @@ int yywrap(void){
     return 1;
 }
 
+void yyerror (char *s){
+    fprintf (stderr, "%s\n", s);
+}

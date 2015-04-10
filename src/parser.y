@@ -6,26 +6,29 @@
     void yyerror(char *s);
 %}
 
+%union {
+	int num;
+	char *str;
+}
+
 /* metacharacters */
-%token LESSTHAN
-%token GREATERTHAN
-%token PIPE
-%token AMPERSAND
-%token BACKSLASH
-%token QUOTE
+%token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH
+%token QUOTE NEWLINE QUIT STRING
 
-%token NEWLINE
-%token WORD
-
-%token QUIT
-
-%start line
-
+%token <str> WORD
 
 %%
-line: WORD
 
+commands: WORD {printf("%s\n", $1);}
+		| commands command
+		;
 
+command: 
+	WORD {
+		printf("%s\n", $1);
+		
+	}
+	;
 
 %%
 

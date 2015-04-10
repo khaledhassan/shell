@@ -10,6 +10,7 @@ int main(void){
 //    printf("Hello, world!\n");
     while(1){
         yylex();
+        yyparse();
     }
 
     return 0;

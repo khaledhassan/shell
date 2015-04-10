@@ -16,21 +16,26 @@
 %token QUOTE NEWLINE QUIT STRING
 
 %token <str> WORD
+%type <str> args program
+
+%left PIPE
+
+%define parse.error verbose
 
 %%
 
-commands: WORD {printf("%s\n", $1);}
-		| commands command
+program:
+		program args NEWLINE
+		|
 		;
 
-command: 
-	WORD {
-		printf("%s\n", $1);
-		
-	}
-	;
+args: 
+		WORD
+		| args PIPE args {printf("%s pipe %s\n", $1, $3); }
+		;
 
-%%
+
+%%												
 
 int yywrap(void){
     return 1;

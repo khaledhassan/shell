@@ -19,4 +19,6 @@
 [ \t]+                  ; /* Eat whitespace */
 \n                      { return NEWLINE; }
 [a-zA-Z0-9_:./~-]+      { yylval.str = strdup(yytext); return WORD; }
+
+. { yyerror("unrecognized character"); return 0; }
 %%

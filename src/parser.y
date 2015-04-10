@@ -36,6 +36,7 @@ int yywrap(void){
     return 1;
 }
 
-void yyerror (char *s){
-    fprintf (stderr, "%s\n", s);
+
+void yyerror(char *s){
+    fprintf(stderr, "%s\n", s);
 }

@@ -6,12 +6,12 @@ CC=colorgcc
 all: shell
 
 .PHONY: debug
-debug: shell.c lex.yy.c y.tab.c
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) shell.c lex.yy.c y.tab.c -o shell
+debug: shell.c lex.yy.c y.tab.c builtin.c
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) shell.c lex.yy.c y.tab.c builtin.c -o shell
 
 
-shell: shell.c lex.yy.c y.tab.c
-	$(CC) $(CFLAGS) shell.c lex.yy.c y.tab.c -o shell
+shell: shell.c lex.yy.c y.tab.c builtin.c
+	$(CC) $(CFLAGS) shell.c lex.yy.c y.tab.c builtin.c -o shell
 
 lex.yy.c: scanner.l
 	flex scanner.l

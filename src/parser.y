@@ -35,8 +35,8 @@ line: NEWLINE { YYACCEPT; }
     | QUIT { printf("cya\n"); exit(0);}
     ;
 
-commands: command args { printf("single command\n"); }
-        | commands PIPE command args { printf("multiple commands\n"); }
+commands: command args { }
+        | commands PIPE command args { }
         ;
 
 command: builtin

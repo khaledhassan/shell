@@ -9,11 +9,11 @@
 // Function Prototypes
 //-----------------------------------
 
-void cd(command_t* cmd);
-void alias(command_t* cmd);
-void unalias(command_t* cmd);
-void setenv(command_t* cmd);
-void printenv(command_t* cmd);
-void unsetenv(command_t* cmd);
+int bi_cd(command_t* cmd);
+int bi_alias(command_t* cmd);
+int bi_unalias(command_t* cmd);
+int bi_setenv(command_t* cmd);
+int bi_printenv(command_t* cmd);
+int bi_unsetenv(command_t* cmd);
 
 #endif // BUILTIN_H_

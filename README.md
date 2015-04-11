@@ -6,16 +6,11 @@ Features NOT yet implemented
 ============================
 * I/O redirection (to and from files)
 * Built-in commands:
+    * `alias`
+        * `unalias name` - remove alias 
     * `setenv`
     * `printenv`
     * `unsetenv`
-    * `cd`
-    * `alias`
-        * `alias` (with no arguments) - print list of aliases 
-        * `alias name word` - set new alias
-        * `unalias name` - remove alias 
-    * `unalias`
-    * `bye` (or `EOF`)
 * Other commands (not built-in)
 * Environment variable expansion
 * Wildcard matching
@@ -24,4 +19,12 @@ Features NOT yet implemented
 
 Features implemented
 ====================
-* Nothing yet! :(
+* Built-in commands:
+    * `cd`
+        * `cd` (with no arguments) - go `HOME`
+        * `cd` `some path` - go to `some path`
+    * `alias`
+        * `alias` (with no arguments) - print list of aliases 
+        * `alias name word` - set new alias
+    * `bye` (or `EOF`)
+

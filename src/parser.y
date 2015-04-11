@@ -16,7 +16,8 @@
 
 /* metacharacters */
 %token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH NEWLINE 
-%token SETENV PRINTENV UNSETENV CD ALIAS UNALIAS QUIT
+%token <str> SETENV PRINTENV UNSETENV CD ALIAS UNALIAS 
+%token QUIT
 %token <str> WORD
 %type <str> command
 %left PIPE
@@ -34,12 +35,19 @@ line: NEWLINE { YYACCEPT; }
     | QUIT { printf("cya\n"); exit(0);}
     ;
 
-commands: command { printf("single command\n"); }
-        | commands command { printf("multiple commands\n"); }
+commands: command args { printf("single command\n"); }
+        | commands PIPE command args { printf("multiple commands\n"); }
         ;
 
 command: builtin
-       | WORD
+       | WORD {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_external;
+            this_command->n_args = 0;
+            num_commands++;
+}
+     /*
        | WORD PIPE command { 
             printf("%s pipe into %s\n", $1, $3); 
          }
@@ -52,17 +60,61 @@ command: builtin
        | WORD GREATERTHAN GREATERTHAN WORD {
             printf("%s appending into %s\n", $1, $4);
          }
+     */
        ;
 
-builtin: SETENV WORD WORD { printf("setenv %s=%s\n", $2, $3); }
-       | PRINTENV { printf("printenv\n"); }
-       | UNSETENV WORD { printf("unsetenv %s\n", $2); }
-       | CD { printf("cd to home\n"); }
-       | CD WORD { printf("cd to %s\n", $2); }
-       | ALIAS { printf("print aliases\n"); }
-       | ALIAS WORD WORD { printf("set alias: %s to %s\n", $2, $3); }
-       | UNALIAS WORD { printf("unalias %s\n", $2); }
+builtin: SETENV {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_setenv;
+            this_command->n_args = 0;
+            num_commands++;
+         }
+       | PRINTENV {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_printenv;
+            this_command->n_args = 0;
+            num_commands++;
+         }
+       | UNSETENV {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_unsetenv;
+            this_command->n_args = 0;
+            num_commands++;
+         }
+       | CD {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_cd;
+            this_command->n_args = 0;
+            num_commands++;
+         }
+       | ALIAS {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_alias;
+            this_command->n_args = 0;
+            num_commands++;
+         }
+       | UNALIAS {
+            command_t* this_command = &command_tab[num_commands];
+            strcpy(this_command->name, $1);
+            this_command->type = c_unalias;
+            this_command->n_args = 0;
+            num_commands++;
+         }
        ;
+
+args: /* no arguments */
+    | args WORD /* 1 or more arguments */ {
+        command_t* this_command = &command_tab[num_commands-1];
+        args_t* this_command_argtab = &(this_command->arg_tab);
+        strcpy(this_command_argtab->args[this_command->n_args], $2);
+        this_command->n_args++;
+      }
+
 
 %%
 

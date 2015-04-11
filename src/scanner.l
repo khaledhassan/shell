@@ -9,12 +9,12 @@
 
 %%
                         /* Built-ins */
-"setenv"                { return SETENV; }
-"printenv"              { return PRINTENV; }
-"unsetenv"              { return UNSETENV; }
-"cd"                    { return CD; }
-"alias"                 { return ALIAS; }
-"unalias"               { return UNALIAS; }
+"setenv"                { yylval.str = strdup(yytext); return SETENV; }
+"printenv"              { yylval.str = strdup(yytext); return PRINTENV; }
+"unsetenv"              { yylval.str = strdup(yytext); return UNSETENV; }
+"cd"                    { yylval.str = strdup(yytext); return CD; }
+"alias"                 { yylval.str = strdup(yytext); return ALIAS; }
+"unalias"               { yylval.str = strdup(yytext); return UNALIAS; }
 "bye"                   { return QUIT; }   
 <<EOF>>                 { return QUIT; }
                         /* Metacharacters */

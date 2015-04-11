@@ -31,7 +31,16 @@ int main(void){
 
     while(1){
         print_prompt();
-        get_command();
+        switch (get_command()) {
+            case OK:
+                process_command();
+                break;
+            case SYSERR:
+                fprintf(stderr, "get_command() failed... cleaning up\n");
+                break;
+            default:
+                break; // TODO: what goes here?
+        }
     }
 
     return 0;
@@ -105,11 +114,21 @@ void print_prompt(void) {
 
     free(path);
 }
+void process_command(void){
+    printf("process_command: commands seen:%d \n", num_commands);
+    for (int i = 0; i != num_commands; ++i) {
+        printf("command %d: %s, n_args: %d, args:", i, command_tab[i].name, command_tab[i].n_args);
+        for (int j = 0; j != command_tab[i].n_args; ++j) {
+            printf("%s ", command_tab[i].arg_tab.args[j]);
+        }
+        printf("\n");
+    }
+}
 
-void process_command(void);
 void recover_from_errors(void) {
     fprintf(stderr, "Errors Occured.\n");
 }
+
 void ignoreCTRLC(int sig) {
     signal(sig, SIG_IGN);
     printf("Type 'bye' to exit\n");

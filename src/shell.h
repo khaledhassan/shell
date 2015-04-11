@@ -24,8 +24,19 @@ typedef struct {
     char   args[MAXARGS][MAXSTRLEN];
 } args_t;
 
+typedef enum {
+    c_external,
+    c_alias,
+    c_unalias,
+    c_cd,
+    c_setenv,
+    c_printenv,
+    c_unsetenv
+} cmd_t;
+
 typedef struct {
     char    name[MAXSTRLEN];
+    cmd_t   type;
     int     in_fd;
     int     out_fd;
     int     n_args;
@@ -50,16 +61,6 @@ typedef struct {
 } env_t;
 
 extern env_t env_tab[MAXENV];
-
-typedef enum {
-    c_external, 
-    c_alias, 
-    c_unalias,
-    c_cd, 
-    c_setenv, 
-    c_printenv, 
-    c_unsetenv
-} builtin_cmd_t;
 
 //-----------------------------------
 // Function Prototypes

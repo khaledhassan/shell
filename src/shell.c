@@ -1,11 +1,13 @@
 // vim: tabstop=4 expandtab
 
-#include "shell.h"
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
+
+#include "shell.h"
     
 #include "y.tab.h"
 

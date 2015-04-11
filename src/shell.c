@@ -28,11 +28,10 @@ env_t env_tab[MAXENV];
 int main(void){
 
     shell_init();
-    init_scanner_and_parser();
 
     while(1){
         print_prompt();
-        yyparse();
+        get_command();
     }
 
     return 0;
@@ -74,6 +73,17 @@ void init_scanner_and_parser(void) {
     num_commands = 0;
 }
 
+int get_command(void){
+    init_scanner_and_parser();
+
+    if (yyparse()) {
+        fprintf(stderr, "get_command: yyparse error?\n");
+        return SYSERR;
+    } else {
+        return OK;
+    }
+}
+
 // Prints: user@hostname:pathname
 void print_prompt(void) {
     char user[LOGIN_NAME_MAX], host[HOST_NAME_MAX];
@@ -95,7 +105,6 @@ void print_prompt(void) {
 
     free(path);
 }
-void get_command(void);
 void process_command(void);
 void recover_from_errors(void);
 void ignoreCTRLC(int sig) {

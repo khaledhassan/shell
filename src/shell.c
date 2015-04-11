@@ -11,6 +11,7 @@
 
 
 #include "shell.h"
+#include "builtin.h"
 #include "y.tab.h"
 
 //-----------------------------------
@@ -117,6 +118,53 @@ void print_prompt(void) {
     free(path);
 }
 void process_command(void){
+    /* Policy: if a builtin command is present, it must be the only command present */
+    int builtin_count = 0;
+    for (int i = 0; i != num_commands; ++i) {
+        if (command_tab[i].type != c_external) {
+            builtin_count++;
+        }
+    }
+
+    if (builtin_count > 1) {
+        fprintf(stderr, "process_command: found %d builtin commands, a max of 1 per line is supported\n", builtin_count);
+        return;
+    }
+
+    if (command_tab[0].type == c_external && builtin_count != 0) {
+        fprintf(stderr, "process_command: found builtin command but not at beginning of line\n");
+        return;
+    }
+
+
+    for (int i = 0; i != num_commands; ++i) {
+        switch (command_tab[i].type ) {
+            case c_cd:
+                bi_cd(&command_tab[i]);
+                break;
+            case c_alias:
+                bi_alias(&command_tab[i]);
+                break;
+            case c_unalias:
+                bi_unalias(&command_tab[i]);
+                break;
+            case c_setenv:
+                bi_setenv(&command_tab[i]);
+                break;
+            case c_printenv:
+                bi_printenv(&command_tab[i]);
+                break;
+            case c_unsetenv:
+                bi_unsetenv(&command_tab[i]);
+                break;
+            case c_external:
+                printf("external command detected; do some cool stuff here\n");
+                break;
+        }
+
+    }
+
+/*
     printf("process_command: commands seen:%d \n", num_commands);
     for (int i = 0; i != num_commands; ++i) {
         printf("command %d: %s, n_args: %d, args:", i, command_tab[i].name, command_tab[i].n_args);
@@ -125,6 +173,7 @@ void process_command(void){
         }
         printf("\n");
     }
+*/
 }
 
 void recover_from_errors(void) {

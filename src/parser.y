@@ -16,8 +16,11 @@
 %token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH NEWLINE 
 
 %token SETENV PRINTENV UNSETENV CD ALIAS UNALIAS QUIT
+%token <str> WORD
 
-%token <str> WORD STRING
+%type <str> args program
+%type <str> command
+
 %left PIPE
 
 %start lines
@@ -26,7 +29,7 @@
 
 %%
 
-lines: line | lines line;
+lines: line | lines line
 
 line: NEWLINE
     | commands NEWLINE
@@ -34,12 +37,20 @@ line: NEWLINE
     ;
 
 commands: command { printf("single command\n"); }
-        | commands command { printf("multiple commands"); }
+        | commands command { printf("multiple commands\n"); }
         ;
 
-command: WORD { printf("word: %s", $1); }
-       | builtin
-       /* | STRING { printf("quoted string: %s", $1); } */
+command: builtin
+       | WORD
+       | WORD PIPE command { 
+            printf("%s pipe into %s\n", $1, $3); 
+         }
+       | WORD LESSTHAN WORD {
+            printf("%s into %s\n", $3, $1);
+         }
+       | WORD GREATERTHAN WORD {
+            printf("%s into %s\n", $1, $3);
+         }
        ;
 
 builtin: SETENV WORD WORD { printf("setenv %s=%s\n", $2, $3); }
@@ -52,7 +63,7 @@ builtin: SETENV WORD WORD { printf("setenv %s=%s\n", $2, $3); }
        | UNALIAS WORD { printf("unalias %s\n", $2); }
        ;
 
-%%												
+%%
 
 int yywrap(void){
     return 1;

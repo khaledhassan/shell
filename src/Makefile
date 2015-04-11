@@ -1,4 +1,4 @@
-FLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -std=c99
 CC=gcc
 
 

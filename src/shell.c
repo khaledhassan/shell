@@ -2,7 +2,14 @@
 
 #include "shell.h"
 #include <stdio.h>
+#include <signal.h>
+#include <string.h>
+#include "y.tab.h"
 
+int num_commands;
+command_t command_tab[MAXCOMMANDS];
+alias_t alias_tab[MAXALIAS];
+env_t env_tab[MAXENV];
 
 int main(void){
 
@@ -23,13 +30,13 @@ void shell_init(void) {
     // define variables/tables
 
     // get path envoronment variables
-    env_tab[0].name = "PATH";
-    env_tab[0].value = getenv("PATH");
+    strcpy(env_tab[0].name, "PATH");
+    strcpy(env_tab[0].value, getenv("PATH"));
     env_tab[0].used = 1;
 
     // get home env
-    env_tab[1].name = "HOME";
-    env_tab[1].value = getenv("HOME");
+    strcpy(env_tab[1].name, "HOME");
+    strcpy(env_tab[1].value, getenv("HOME"));
     env_tab[1].used = 1;
 
     // disable anything to kill shell
@@ -40,13 +47,13 @@ void shell_init(void) {
 // Reinitilaizes all tables
 void init_scanner_and_parser(void) {
     // Clear the command table
-    for(int i = 0; i < MAXCOMMANDS; ++i) {
-        command_tab[i].name = "";
+    for(int i = 0; i != MAXCOMMANDS; ++i) {
+        strcpy(command_tab[i].name, "");
         command_tab[i].in_fd = 0; // TODO: What should the default be? 
         command_tab[i].out_fd = 0;
         // clear the arguments
-        for(int j = 0; j < command_tab[i].n_args; ++j) {
-            command_tab[i].arg_tab[j].args = "";
+        for(int j = 0; j != MAXARGS; ++j) {
+            strcpy(command_tab[i].arg_tab.args[j], "");
         }
         command_tab[i].n_args = 0;
     }

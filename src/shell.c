@@ -6,9 +6,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 
 #include "shell.h"
-    
 #include "y.tab.h"
 
 //-----------------------------------
@@ -134,4 +136,57 @@ void ignoreCTRLC(int sig) {
     printf("Type 'bye' to exit\n");
     signal(SIGINT, ignoreCTRLC);
 }
+// inputs
+//  path_buf: modifies this to contain the path to the executable
+//  size: size of the buffer being passed in 
+int findCommand(char* path_buf, size_t size, char* command) {
+    //make a copy of the PATH variable
+    char path[MAXSTRLEN];
+    strcpy(path, env_tab[0].value);
+    char* token = strtok(path, ":");
+    char* originalDir = get_current_dir_name();
+    char* currentDir = get_current_dir_name();
+    int match = 0;
+    while(token && !match) {
+        if(chdir(token)) {
+            fprintf(stderr, "Directory <%s> does not exist\n", token);
+            match = -1;
+        } else {
+            currentDir = get_current_dir_name();
+            // Begin by opening the directory and reading the filenames to match with the command we're looking for.
+            DIR *dip;
+            struct dirent *dit;
+            
+            // If we can open the directory, then that's half the battle :P
+            if((dip = opendir(currentDir)) == NULL) {
+                fprintf(stderr, "Couldn't open the directory <%s>\n", currentDir);
+                match = -1;
+            }
+
+            while((dit = readdir(dip)) != NULL) {
+                if(!strcmp(command, dit->d_name)) {
+                    snprintf(path_buf, size, "%s/%s\n", currentDir, dit->d_name);
+                    match = 1;
+                    break;
+                }
+            }
+
+        }
+
+        free(currentDir);
+        token = strtok(NULL, ":");
+        
+    }
+    if(chdir(originalDir)) {
+        fprintf(stderr, "Could not change back to orignal directory\n");
+    }
+    free(originalDir);
+
+    if(match == 1) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
 

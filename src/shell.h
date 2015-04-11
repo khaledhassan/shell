@@ -67,11 +67,12 @@ extern env_t env_tab[MAXENV];
 //-----------------------------------
 
 void shell_init(void);
-void init_scanner_and_parser();
+void init_scanner_and_parser(void);
 void print_prompt(void);
 int get_command(void);
 void process_command(void);
 void recover_from_errors(void);
 void ignoreCTRLC(int);
+int findCommand(char*, size_t, char*);
 
 #endif // SHELL_H_

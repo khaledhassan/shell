@@ -1,15 +1,21 @@
 CFLAGS=-Wall -Wextra -std=gnu99
+DEBUG_FLAGS=-g
 CC=colorgcc
 
 
 all: shell
 
-shell: shell.c lex.yy.c y.tab.c yacc
+.PHONY: debug
+debug: shell.c lex.yy.c y.tab.c
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) shell.c lex.yy.c y.tab.c -o shell
+
+
+shell: shell.c lex.yy.c y.tab.c
 	$(CC) $(CFLAGS) shell.c lex.yy.c y.tab.c -o shell
 
 lex.yy.c: scanner.l
 	flex scanner.l
-.PHONY: yacc
+
 y.tab.c: parser.y
 	bison -d -y parser.y	
 .PHONY: clean

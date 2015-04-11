@@ -86,8 +86,10 @@ void print_prompt(void) {
     if(gethostname(host, HOST_NAME_MAX)) {
         fprintf(stderr, "gethostname() unsuccessful.\n");
     }
-
-    printf("%s@%s:%s", user, host, path);
+    if(!strcmp(user, "root"))
+        printf("%s@%s:%s# ", user, host, path);
+    else
+        printf("%s@%s:%s$ ", user, host, path);
 }
 void get_command(void);
 void process_command(void);

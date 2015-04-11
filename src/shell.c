@@ -40,7 +40,8 @@ void shell_init(void) {
     env_tab[1].used = 1;
 
     // disable anything to kill shell
-    signal(SIGINT, ignoreCTRLC);
+    sigset(SIGINT, SIG_IGN);
+    //sigset(SIGINT, ignoreCTRLC); // TODO: custom handler should clean up token stream? Lex/Yacc don't like something
 
 }
 

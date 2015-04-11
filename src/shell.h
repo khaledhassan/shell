@@ -1,10 +1,9 @@
+// vim: tabstop=4 expandtab
+
 #ifndef SHELL_H_
 #define SHELL_H_
 
 #include <stdlib.h>
-
-
-
 
 //-----------------------------------
 // Global Variables / Defines

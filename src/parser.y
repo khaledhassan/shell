@@ -3,6 +3,7 @@
 %{
     #include <stdio.h>
     #include "shell.h"
+    #include <stdlib.h>
     void yyerror(char *s);
 %}
 
@@ -16,22 +17,32 @@
 %token QUOTE NEWLINE QUIT STRING
 
 %token <str> WORD
-%type <str> args program
+%type <str> command
 
-%left PIPE
 
 %define parse.error verbose
 
 %%
 
-program:
-		program args NEWLINE
-		|
-		;
+commands: NEWLINE
+	 	| commands command NEWLINE
+	 	| QUIT {printf("Cya\n"); exit(0);}
+	 	;
 
-args: 
-		WORD
-		| args PIPE args {printf("%s pipe %s\n", $1, $3); }
+
+command: 	WORD
+		| WORD PIPE command 
+			{
+				printf("%s pipe into %s\n", $1, $3); 
+			}
+		| WORD LESSTHAN WORD
+			{
+				printf("%s into %s\n", $3, $1);
+			}
+		| WORD GREATERTHAN WORD
+			{
+				printf("%s into %s\n", $1, $3);
+			}
 		;
 
 

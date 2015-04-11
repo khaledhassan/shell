@@ -1,10 +1,9 @@
+// vim: tabstop=4 expandtab
+
 #ifndef SHELL_H_
 #define SHELL_H_
 
 #include <stdlib.h>
-
-
-
 
 //-----------------------------------
 // Global Variables / Defines
@@ -18,6 +17,8 @@
 #define HOST_NAME_MAX 64
 #define LOGIN_NAME_MAX 256
 
+#define OK       0
+#define SYSERR  -1
 
 typedef struct {
     char   args[MAXARGS][MAXSTRLEN];

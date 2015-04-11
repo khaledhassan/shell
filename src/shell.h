@@ -68,7 +68,7 @@ typedef enum {
 void shell_init(void);
 void init_scanner_and_parser();
 void print_prompt(void);
-void get_command(void);
+int get_command(void);
 void process_command(void);
 void recover_from_errors(void);
 void ignoreCTRLC(int);

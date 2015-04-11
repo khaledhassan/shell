@@ -30,7 +30,7 @@ int main(void){
 
     while(1){
         print_prompt();
-        yyparse();
+        get_command();
     }
 
     return 0;
@@ -72,7 +72,7 @@ void init_scanner_and_parser(void) {
     num_commands = 0;
 }
 
-// Prints: user@hostname:pathname
+// Prints: user@hostname:pathname$
 void print_prompt(void) {
     char user[LOGIN_NAME_MAX], host[HOST_NAME_MAX];
     char* path;
@@ -93,9 +93,17 @@ void print_prompt(void) {
 
     free(path);
 }
-void get_command(void);
+
+void get_command(void) {
+    init_scanner_and_parser();
+    if(yyparse()) {
+        recover_from_errors();
+    } 
+}
 void process_command(void);
-void recover_from_errors(void);
+void recover_from_errors(void) {
+    fprintf(stderr, "Errors Occured.\n");
+}
 void ignoreCTRLC(int sig) {
     signal(sig, SIG_IGN);
     printf("Type 'bye' to exit\n");

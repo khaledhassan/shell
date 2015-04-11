@@ -2,8 +2,9 @@
 */
 %{
     #include <stdio.h>
+    #include <stdlib.h>
     #include "shell.h"
-    void yyerror(char *s);
+    void yyerror(const char *s);
 %}
 
 %union {
@@ -12,28 +13,44 @@
 }
 
 /* metacharacters */
-%token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH
-%token QUOTE NEWLINE QUIT STRING
+%token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH NEWLINE 
 
-%token <str> WORD
-%type <str> args program
+%token SETENV PRINTENV UNSETENV CD ALIAS UNALIAS QUIT
 
+%token <str> WORD STRING
 %left PIPE
+
+%start lines
 
 %define parse.error verbose
 
 %%
 
-program:
-		program args NEWLINE
-		|
-		;
+lines: line | lines line;
 
-args: 
-		WORD
-		| args PIPE args {printf("%s pipe %s\n", $1, $3); }
-		;
+line: NEWLINE
+    | commands NEWLINE
+    | QUIT { printf("cya\n"); exit(0);}
+    ;
 
+commands: command { printf("single command\n"); }
+        | commands command { printf("multiple commands"); }
+        ;
+
+command: WORD { printf("word: %s", $1); }
+       | builtin
+       /* | STRING { printf("quoted string: %s", $1); } */
+       ;
+
+builtin: SETENV WORD WORD { printf("setenv %s=%s\n", $2, $3); }
+       | PRINTENV { printf("printenv\n"); }
+       | UNSETENV WORD { printf("unsetenv %s\n", $2); }
+       | CD { printf("cd to home\n"); }
+       | CD WORD { printf("cd to %s\n", $2); }
+       | ALIAS { printf("print aliases\n"); }
+       | ALIAS WORD WORD { printf("set alias: %s to %s\n", $2, $3); }
+       | UNALIAS WORD { printf("unalias %s\n", $2); }
+       ;
 
 %%												
 
@@ -42,6 +59,6 @@ int yywrap(void){
 }
 
 
-void yyerror(char *s){
+void yyerror(const char *s){
     fprintf(stderr, "%s\n", s);
 }

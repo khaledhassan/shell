@@ -14,12 +14,9 @@
 
 /* metacharacters */
 %token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH NEWLINE 
-
 %token SETENV PRINTENV UNSETENV CD ALIAS UNALIAS QUIT
 %token <str> WORD
-
 %type <str> command
-
 %left PIPE
 
 %start lines

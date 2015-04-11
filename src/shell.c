@@ -4,26 +4,37 @@
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
+#include <unistd.h>
+#include <limits.h>
+    
 #include "y.tab.h"
+
+//-----------------------------------
+// Values declared extern
+//-----------------------------------
 
 int num_commands;
 command_t command_tab[MAXCOMMANDS];
 alias_t alias_tab[MAXALIAS];
 env_t env_tab[MAXENV];
 
+
+//-----------------------------------
+// Functions
+//-----------------------------------
+
 int main(void){
 
     shell_init();
     init_scanner_and_parser();
 
-
     while(1){
+        print_prompt();
         yyparse();
     }
 
     return 0;
 }
-
 
 void shell_init(void) {
     // init all variables - None for now?
@@ -61,7 +72,23 @@ void init_scanner_and_parser(void) {
     num_commands = 0;
 }
 
-void print_prompt(void);
+// Prints: user@hostname:pathname
+void print_prompt(void) {
+    char user[LOGIN_NAME_MAX], host[HOST_NAME_MAX];
+    char* path;
+    // Get the username
+    if(getlogin_r(user, LOGIN_NAME_MAX)) {
+        fprintf(stderr, "getlogin() unsuccessful.\n");
+    }
+    // Get current path
+    path = get_current_dir_name();
+    // get current hostname
+    if(gethostname(host, HOST_NAME_MAX)) {
+        fprintf(stderr, "gethostname() unsuccessful.\n");
+    }
+
+    printf("%s@%s:%s", user, host, path);
+}
 void get_command(void);
 void process_command(void);
 void recover_from_errors(void);

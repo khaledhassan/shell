@@ -1,5 +1,5 @@
 CFLAGS=-Wall -Wextra -std=c99
-CC=gcc
+CC=colorgcc
 
 
 all: shell

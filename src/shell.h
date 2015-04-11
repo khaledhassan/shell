@@ -3,6 +3,9 @@
 
 #include <stdlib.h>
 
+
+
+
 //-----------------------------------
 // Global Variables / Defines
 //-----------------------------------
@@ -12,6 +15,9 @@
 #define MAXALIAS 300
 #define MAXENV 300
 #define MAXSTRLEN 300
+#define HOST_NAME_MAX 64
+#define LOGIN_NAME_MAX 256
+
 
 typedef struct {
     char   args[MAXARGS][MAXSTRLEN];

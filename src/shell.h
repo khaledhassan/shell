@@ -8,34 +8,49 @@
 #define MAXCOMMANDS 50
 #define MAXARGS 300
 #define MAXALIAS 300
+#define MAXENV 300
+#define MAXSTRLEN 300
 
 typedef struct {
     char*   args[MAXARGS];
 } args_t;
 
 typedef struct {
-    char*   name;
+    char    name[MAXSTRLEN];
     int     in_fd;
     int     out_fd;
     int     n_args;
     args_t  arg_tab;
 } command_t;
 
+command_t command_tab[MAXCOMMANDS];
+
 typedef struct {
     int     used;
-    char*   name;
-    char*   value;
+    char    name[MAXSTRLEN];
+    char    value[MAXSTRLEN];
 } alias_t;
 
+alias_t alias_tab[MAXALIAS];
+
+typedef struct {
+    char    name[MAXSTRLEN];
+    char    value[MAXSTRLEN];
+    int     used;
+} env_t;
+
+env_t env_tab[MAXENV];
+
 typedef enum {
-    external, 
-    alias, 
-    unalias,
-    cd, 
-    setenv, 
-    printenv, 
-    unsetenv
+    c_external, 
+    c_alias, 
+    c_unalias,
+    c_cd, 
+    c_setenv, 
+    c_printenv, 
+    c_unsetenv
 } builtin_cmd_t;
+
 
 //-----------------------------------
 // Function Prototypes

@@ -17,6 +17,8 @@
 #define HOST_NAME_MAX 64
 #define LOGIN_NAME_MAX 256
 
+#define OK       0
+#define SYSERR  -1
 
 typedef struct {
     char   args[MAXARGS][MAXSTRLEN];

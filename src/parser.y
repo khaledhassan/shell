@@ -29,8 +29,8 @@
 
 lines: line | lines line
 
-line: NEWLINE
-    | commands NEWLINE
+line: NEWLINE { YYACCEPT; }
+    | commands NEWLINE { YYACCEPT; }
     | QUIT { printf("cya\n"); exit(0);}
     ;
 

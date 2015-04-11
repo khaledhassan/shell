@@ -90,6 +90,8 @@ void print_prompt(void) {
         printf("%s@%s:%s# ", user, host, path);
     else
         printf("%s@%s:%s$ ", user, host, path);
+
+    free(path);
 }
 void get_command(void);
 void process_command(void);

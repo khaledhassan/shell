@@ -14,7 +14,7 @@ int bi_cd(command_t* cmd){
         }
     } else { // cd to some path
         if (chdir(cmd->arg_tab.args[0]) != 0) {
-            fprintf(stderr, "cd: invlid path!\n");
+            fprintf(stderr, "cd: invalid path!\n");
             return SYSERR;
         } else {
             return OK;

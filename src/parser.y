@@ -18,7 +18,6 @@
 %token SETENV PRINTENV UNSETENV CD ALIAS UNALIAS QUIT
 %token <str> WORD
 
-%type <str> args program
 %type <str> command
 
 %left PIPE
@@ -50,6 +49,9 @@ command: builtin
          }
        | WORD GREATERTHAN WORD {
             printf("%s into %s\n", $1, $3);
+         }
+       | WORD GREATERTHAN GREATERTHAN WORD {
+            printf("%s appending into %s\n", $1, $4);
          }
        ;
 

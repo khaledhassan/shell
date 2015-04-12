@@ -65,7 +65,7 @@ void shell_init(void) {
 
     // disable anything to kill shell
     sigset(SIGINT, SIG_IGN);
-    //sigset(SIGINT, ignoreCTRLC); // TODO: custom handler should clean up token stream? Lex/Yacc don't like something
+    //sigset(SIGINT, ignore_CTRLC); // TODO: custom handler should clean up token stream? Lex/Yacc don't like something
 
 }
 
@@ -180,19 +180,19 @@ void recover_from_errors(void) {
     fprintf(stderr, "Errors Occured.\n");
 }
 
-void ignoreCTRLC(int sig) {
+void ignore_CTRLC(int sig) {
     signal(sig, SIG_IGN);
     printf("Type 'bye' to exit\n");
-    signal(SIGINT, ignoreCTRLC);
+    signal(SIGINT, ignore_CTRLC);
 }
-//  findCommand
+//  find_command
 //  inputs:
 //      path_buf: buffer will contain the path to the command if found
 //      size: size of the buffer being passed in 
 //      command: the name of the command/program being called
 //  outputs:
 //      returns 0 if command was found, 1 if not found, -1 for error.
-int findCommand(char* path_buf, size_t size, char* command) {
+int find_command(char* path_buf, size_t size, char* command) {
     //make a copy of the PATH variable
     char path[MAXSTRLEN];
     strcpy(path, env_tab[0].value);

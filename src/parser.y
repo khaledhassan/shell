@@ -37,6 +37,7 @@
 lines: line | lines line
 
 line: NEWLINE { YYACCEPT; }
+    | error NEWLINE
     | commands NEWLINE { YYACCEPT; }
     | QUIT { printf("cya\n"); exit(0);}
     ;

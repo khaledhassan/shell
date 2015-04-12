@@ -167,7 +167,7 @@ void process_command(void){
                     if (pid == 0) { // child
                         int argv_size = command_tab[i].n_args + 1;
                         char* argv[argv_size];
-                        for (int j = 0; j != argv_size - 1; ++j) {
+                        for (int j = 0; j != argv_size; ++j) {
                             argv[j] = command_tab[i].arg_tab.args[j];
                         }
                         argv[argv_size] = NULL;

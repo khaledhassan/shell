@@ -5,10 +5,6 @@ Khaled Hassan and Mason Turner
 Features NOT yet implemented
 ============================
 * I/O redirection (to and from files)
-* Built-in commands:
-    * `setenv`
-    * `printenv`
-    * `unsetenv`
 * Other commands (not built-in)
 * Environment variable expansion
 * Wildcard matching
@@ -26,4 +22,7 @@ Features implemented
         * `alias name word` - set new alias
         * `unalias name` - remove alias 
     * `bye` (or `EOF`)
+    * `setenv`
+    * `printenv`
+    * `unsetenv`
 

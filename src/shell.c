@@ -46,6 +46,7 @@ int main(void){
                 break;
             case SYSERR:
                 fprintf(stderr, "get_command() failed... cleaning up\n");
+                while (yylex() != 0) {} // eat commands until yylex returns 0?
                 break;
             default:
                 break; // TODO: what goes here?
@@ -288,7 +289,7 @@ int find_command(char* path_buf, size_t size, char* command) {
             token = strtok(NULL, ":");      
         }    
     } else {
-        printf("Looking for %s\n", command);
+        //printf("Looking for %s\n", command);
         DIR *dip;
         struct dirent *dit;
         

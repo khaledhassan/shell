@@ -155,7 +155,10 @@ redir: LESSTHAN WORD {
                 close(outfd);
             }
        }
-     | ERRTOOUT { printf("error going to stdout\n"); }
+     | ERRTOOUT {
+            close(STDERR_FILENO);
+            dup(STDOUT_FILENO);
+       }
      ;
 
 %%

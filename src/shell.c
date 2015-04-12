@@ -125,21 +125,39 @@ int get_command(void){
 void print_prompt(void) {
     char user[LOGIN_NAME_MAX], host[HOST_NAME_MAX];
     char* path;
+    // char tilde_path[MAXSTRLEN];
+    // strcpy(tilde_path, "");
     // Get the username
     if(getlogin_r(user, LOGIN_NAME_MAX)) {
         fprintf(stderr, "getlogin() unsuccessful.\n");
     }
-    // Get current path
-    path = get_current_dir_name();
+
     // get current hostname
     if(gethostname(host, HOST_NAME_MAX)) {
         fprintf(stderr, "gethostname() unsuccessful.\n");
     }
-    if(!strcmp(user, "root"))
-        printf("%s@%s:%s# ", user, host, path);
-    else
-        printf("%s@%s:%s$ ", user, host, path);
 
+        // Get current path
+    path = get_current_dir_name();
+
+    // char regex_str[MAXSTRLEN];
+    // sprintf(regex_str, "(?<=%s)/.*  ", env_tab[1].value);
+
+    // regex_t r;
+    // compile_regex(&r, regex_str);
+    // match_regex(&r, path, tilde_path);
+    // if(strcmp(tilde_path, "") != 0) {
+    //      if(!strcmp(user, "root"))
+    //         printf("%s@%s:~%s# ", user, host, tilde_path);
+    //     else
+    //         printf("%s@%s:~%s$ ", user, host, tilde_path);
+    // } else {
+         if(!strcmp(user, "root"))  
+            printf("%s@%s:%s# ", user, host, path);
+        else
+            printf("%s@%s:%s$ ", user, host, path);
+    // }
+   
     free(path);
 }
 void process_command(void){
@@ -244,8 +262,6 @@ void process_command(void){
 
                     command_tab[i].n_args = x;
                     command_tab[i].arg_tab = new_arg_tab;
-
-
 
                     int pid;
                     pid = fork();
@@ -405,3 +421,6 @@ int find_alias(char* alias_name) {
         return -1;
     }
 }
+
+
+

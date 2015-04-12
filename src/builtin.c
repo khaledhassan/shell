@@ -2,6 +2,8 @@
 
 #include "builtin.h"
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include "shell.h"
 
 int bi_cd(command_t* cmd){
@@ -58,7 +60,29 @@ int bi_alias(command_t* cmd){
 }
 
 int bi_unalias(command_t* cmd){
+    if (cmd->n_args != 1) {
+        fprintf(stderr, "unalias expects exactly 1 argument, %d provided\n", cmd->n_args);
+        return SYSERR;
+    }
 
+    int pos = 0;
+    int found = 0;
+
+    while (pos < MAXALIAS && found == 0) {
+        if (alias_tab[pos].used == 1 && strcmp(alias_tab[pos].name, cmd->arg_tab.args[0]) == 0 ) {
+            found = 1;
+        } else {
+            ++pos;
+        }
+    }
+
+    if (found == 0) {
+        fprintf(stderr, "unalias: cannot find alias with name %s\n", cmd->arg_tab.args[0]);
+        return SYSERR;
+    } else {
+        alias_tab[pos].used = 0;
+        return OK;
+    }
 }
 
 int bi_setenv(command_t* cmd){

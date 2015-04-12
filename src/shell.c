@@ -158,7 +158,28 @@ void process_command(void){
                 bi_unsetenv(&command_tab[i]);
                 break;
             case c_external:
-                printf("external command detected; do some cool stuff here\n");
+                ; // THIS SEMICOLON IS MEGA IMPORTANT DO NOT REMOVE OR THE WORLD STOPS SPINNING!
+                  // I'M WARNING YOU, CHILDREN WILL CRY
+                char full_path[MAXSTRLEN];
+                if (findCommand(full_path, MAXSTRLEN, command_tab[i].name) == 0) { // command is found
+                    int pid;
+                    pid = fork();
+
+                    if (pid == 0) { // child
+                        int argv_size = command_tab[i].n_args + 1;
+                        char* argv[argv_size];
+                        for (int j = 0; j != argv_size - 1; ++j) {
+                            argv[j] = command_tab[i].arg_tab.args[j];
+                        }
+                        argv[argv_size] = NULL;
+
+                        execv(full_path, argv);
+                        exit(1);
+                    } 
+
+                    wait(0);
+ 
+                }
                 break;
         }
 
@@ -218,7 +239,7 @@ int find_command(char* path_buf, size_t size, char* command) {
 
             while((dit = readdir(dip)) != NULL) {
                 if(!strcmp(command, dit->d_name)) {
-                    snprintf(path_buf, size, "%s/%s\n", currentDir, dit->d_name);
+                    snprintf(path_buf, size, "%s/%s", currentDir, dit->d_name);
                     match = 1;
                     break;
                 }

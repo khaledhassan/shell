@@ -44,7 +44,8 @@ command: builtin
             command_t* this_command = &command_tab[num_commands];
             strcpy(this_command->name, $1);
             this_command->type = c_external;
-            this_command->n_args = 0;
+            this_command->n_args = 1;
+            strcpy(this_command->arg_tab.args[0], $1); // non-builtins need argv[0] to be their binary name?
             num_commands++;
 }
      /*

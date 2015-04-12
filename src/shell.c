@@ -170,7 +170,7 @@ void process_command(void){
                         for (int j = 0; j != argv_size; ++j) {
                             argv[j] = command_tab[i].arg_tab.args[j];
                         }
-                        argv[argv_size] = NULL;
+                        argv[argv_size-1] = NULL;
 
                         execv(full_path, argv);
                         exit(1);

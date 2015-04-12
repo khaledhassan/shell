@@ -7,6 +7,7 @@
     void yyerror(const char *s);
 %}
 
+
 %%
                         /* Built-ins */
 "setenv"                { yylval.str = strdup(yytext); return SETENV; }
@@ -27,11 +28,12 @@
 "&"                     { return AMPERSAND; }
 "\\"                    { return BACKSLASH; }
  
-[-a-zA-Z0-9_:./~*]+      { yylval.str = strdup(yytext); return WORD; }
+[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+      { yylval.str = strdup(yytext); return WORD; }
 \"(\\.|[^\n"\\])*\"     { yytext++; yytext[yyleng-2] = 0; yylval.str = strdup(yytext); return WORD; }
 
 \n                      { return NEWLINE; }
 [ \t]+                  ; /* Eat whitespace */
 
-. { yyerror("unrecognized character"); return 0; }
+ /*. { yyerror("unrecognized character"); return 0; }*/
 %%
+

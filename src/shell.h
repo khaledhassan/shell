@@ -64,6 +64,8 @@ extern env_t env_tab[MAXENV];
 
 extern int abort_command;
 extern int run_in_background;
+extern int redir_stderr;
+extern int saved_stderr;
 
 //-----------------------------------
 // Function Prototypes

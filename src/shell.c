@@ -25,11 +25,12 @@ alias_t alias_tab[MAXALIAS];
 env_t env_tab[MAXENV];
 int abort_command;
 int run_in_background;
+int redir_stderr;
+int saved_stderr;
 
 //-----------------------------------
 // Values not declared extern
 //-----------------------------------
-int saved_stderr;
 
 //-----------------------------------
 // Functions
@@ -47,6 +48,7 @@ int main(void){
                 break;
             case SYSERR:
                 fprintf(stderr, "get_command() failed... cleaning up\n");
+                while (yylex() != 0) {} // eat commands until yylex returns 0?
                 break;
             default:
                 break; // TODO: what goes here?
@@ -98,6 +100,7 @@ void init_scanner_and_parser(void) {
 
     // restore saved stderr in case it was redirected
     dup2(saved_stderr, 2);
+    redir_stderr = 0;
 }
 
 int get_command(void){
@@ -375,5 +378,23 @@ int find_command(char* path_buf, size_t size, char* command) {
         return -1;
     } else {
         return 1;
+    }
+}
+
+int find_alias(char* alias_name) {
+    int pos = 0;
+    int found = 0;
+    while (pos < MAXALIAS && found == 0) {
+        if (alias_tab[pos].used == 1 && strcmp(alias_tab[pos].name, alias_name) == 0) {
+            found = 1;
+        } else {
+            ++pos;
+        }
+    }
+
+    if (found) {
+        return pos;
+    } else {
+        return -1;
     }
 }

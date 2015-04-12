@@ -4,9 +4,6 @@ Khaled Hassan and Mason Turner
 
 Features NOT yet implemented
 ============================
-* I/O redirection
-    * stderr to stdout (code written, needs test)
-    * stderr to file (code written, needs test)
 * Environment variable expansion
 * Alias expansion
 * Wildcard matching
@@ -31,5 +28,7 @@ Features implemented
 * I/O redirection
     * from command to command
     * to and from files
+    * stderr to stdout (some testing done, more would be nice)
+    * stderr to file (some testing done, more would be nice)
 
 

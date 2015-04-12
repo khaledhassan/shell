@@ -185,16 +185,6 @@ void process_command(void){
 
     }
 
-/*
-    printf("process_command: commands seen:%d \n", num_commands);
-    for (int i = 0; i != num_commands; ++i) {
-        printf("command %d: %s, n_args: %d, args:", i, command_tab[i].name, command_tab[i].n_args);
-        for (int j = 0; j != command_tab[i].n_args; ++j) {
-            printf("%s ", command_tab[i].arg_tab.args[j]);
-        }
-        printf("\n");
-    }
-*/
 }
 
 void recover_from_errors(void) {

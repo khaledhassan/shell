@@ -405,3 +405,22 @@ int find_alias(char* alias_name) {
         return -1;
     }
 }
+
+int find_env(char* env_name) {
+    int pos = 0;
+    int found = 0;
+    while (pos < MAXENV && found == 0) {
+        if (env_tab[pos].used == 1 && strcmp(env_tab[pos].name, env_name) == 0) {
+            found = 1;
+        } else {
+            ++pos;
+        }
+    }
+
+    if (found) {
+        return pos;
+    } else {
+        return -1;
+    }
+}
+

@@ -9,6 +9,7 @@
 %}
 
 %s SAWALIAS
+%s SAWBRACE
 %%
                         /* Built-ins */
 "setenv"                { yylval.str = strdup(yytext); return SETENV; }
@@ -28,7 +29,10 @@
 "|"                     { return PIPE; }
 "&"                     { return AMPERSAND; }
 "\\"                    { return BACKSLASH; }
- 
+
+"${"                    { BEGIN(SAWBRACE); }
+<SAWBRACE>"}"           { BEGIN(INITIAL); }
+
 <SAWALIAS>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
                             yylval.str = strdup(yytext);
                             return WORD;
@@ -36,7 +40,7 @@
 
 
 <INITIAL>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
-                            yylval.str = strdup(yytext); 
+                            yylval.str = strdup(yytext);
 
                             int alias_pos = find_alias(yylval.str);
 
@@ -49,6 +53,28 @@
                             } else {
                                 return WORD;
                             } 
+                        }
+
+<SAWBRACE>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
+                            yylval.str = strdup(yytext);
+
+                            int env_pos = find_env(yylval.str);
+                            int alias_pos = find_alias(yylval.str);
+                            if (env_pos != -1) {
+                                int value_len = strlen(env_tab[env_pos].value);
+                                for (int i = value_len - 1; i >= 0; --i) {
+                                    unput(env_tab[env_pos].value[i]);
+                                }
+                                free(yylval.str);
+                            } else if (alias_pos != -1) {
+                                int value_len = strlen(alias_tab[alias_pos].value);
+                                for (int i = value_len - 1; i >= 0; --i) {
+                                    unput(alias_tab[alias_pos].value[i]);
+                                }
+                                free(yylval.str);
+                            } else {
+                                return WORD;
+                            }
                         }
 
 \"(\\.|[^\n"\\])*\"     { yytext++; yytext[yyleng-2] = 0; yylval.str = strdup(yytext); return WORD; }

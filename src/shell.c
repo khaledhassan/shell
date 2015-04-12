@@ -74,10 +74,8 @@ void init_scanner_and_parser(void) {
     // Clear the command table
     for(int i = 0; i != MAXCOMMANDS; ++i) {
         strcpy(command_tab[i].name, "");
-        if(command_tab[i].in_fd != 0) close(command_tab[i].in_fd);
-        if(command_tab[i].out_fd != 1) close(command_tab[i].out_fd);
-        command_tab[i].in_fd = 0; // TODO: What should the default be? 
-        command_tab[i].out_fd = 0;
+        command_tab[i].in_fd = -1; // TODO: What should the default be? 
+        command_tab[i].out_fd = -1;
         // clear the arguments
         for(int j = 0; j != MAXARGS; ++j) {
             strcpy(command_tab[i].arg_tab.args[j], "");
@@ -174,9 +172,26 @@ void process_command(void){
                         }
                         argv[argv_size-1] = NULL;
 
+                        //printf("about to exec: %s with in_fd: %d and out_fd: %d\n", full_path, command_tab[i].in_fd, command_tab[i].out_fd);
+
+                        if (command_tab[i].in_fd != -1) {
+                            dup2(command_tab[i].in_fd, STDIN_FILENO);
+                        }
+
+                        if (command_tab[i].out_fd != -1) {
+                            dup2(command_tab[i].out_fd, STDOUT_FILENO);
+                        }
                         execv(full_path, argv);
-                        exit(0);
+                        exit(1);
                     } 
+                    // close pipe files in parent (shell) or the child processes may wait forever :(
+                    if (command_tab[i].in_fd != -1) {
+                        close(command_tab[i].in_fd);
+                    }
+
+                    if (command_tab[i].out_fd != -1) {
+                        close(command_tab[i].out_fd);
+                    }
 
                     wait(0);
  

@@ -4,15 +4,16 @@ Khaled Hassan and Mason Turner
 
 How to run
 ==========
-`cd src`
-`make`
-`./shell`
+1. `cd src`
+2. `make`
+3. `./shell`
 
 Features NOT yet implemented
 ============================
 * Environment variable expansion
 * Alias expansion
 * Wildcard matching
+    * other directories/paths 
 * Extra credit: Tilde expansion
 * Extra credit: File name completion
 
@@ -36,5 +37,7 @@ Features implemented
     * to and from files
     * stderr to stdout (some testing done, more would be nice)
     * stderr to file (some testing done, more would be nice)
+* Wildcard matching
+    * current directory only (except for a single `*`)
 
 

@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <dirent.h>
-
 
 #include "shell.h"
 #include "builtin.h"

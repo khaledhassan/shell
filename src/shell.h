@@ -73,6 +73,6 @@ int get_command(void);
 void process_command(void);
 void recover_from_errors(void);
 void ignoreCTRLC(int);
-int findCommand(char*, size_t, char*);
+int find_command(char*, size_t, char*);
 
 #endif // SHELL_H_

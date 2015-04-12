@@ -49,6 +49,7 @@ commands: command args { }
             command_tab[num_commands-1].in_fd = pipe_tab[0];
          }
         | commands redir { }
+        | commands AMPERSAND { run_in_background = 1; }
         ;
 
 command: builtin

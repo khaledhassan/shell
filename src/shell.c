@@ -23,6 +23,7 @@ command_t command_tab[MAXCOMMANDS];
 alias_t alias_tab[MAXALIAS];
 env_t env_tab[MAXENV];
 int abort_command;
+int run_in_background;
 
 //-----------------------------------
 // Values not declared extern
@@ -79,6 +80,7 @@ void shell_init(void) {
 
 // Reinitilaizes all tables
 void init_scanner_and_parser(void) {
+    run_in_background = 0;
     abort_command = 0;
     // Clear the command table
     for(int i = 0; i != MAXCOMMANDS; ++i) {
@@ -209,7 +211,9 @@ void process_command(void){
                         close(command_tab[i].out_fd);
                     }
 
-                    wait(0);
+                    if (i == num_commands-1 && run_in_background == 0) { // DeMorgan says: if not last command or run_in_background == 1, then
+                        wait(0);
+                    }
  
                 } else if(command_res == -1) {
                     continue;

@@ -3,7 +3,10 @@ DEBUG_FLAGS=-g
 CC=colorgcc
 
 
-all: shell
+all: shell args
+
+args: args.c
+	$(CC) $(CFLAGS) args.c -o args
 
 .PHONY: debug
 debug: shell.c lex.yy.c y.tab.c builtin.c
@@ -20,5 +23,5 @@ y.tab.c: parser.y
 	bison -d -y parser.y	
 .PHONY: clean
 clean:
-	rm -rf *.o shell lex.yy.c y.tab.c y.tab.h
+	rm -rf *.o shell lex.yy.c y.tab.c y.tab.h args
 

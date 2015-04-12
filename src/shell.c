@@ -13,6 +13,7 @@
 #include "shell.h"
 #include "builtin.h"
 #include "y.tab.h"
+#include "regex_lib.h"
 
 //-----------------------------------
 // Values declared extern
@@ -179,6 +180,63 @@ void process_command(void){
                 char full_path[MAXSTRLEN];
                 int command_res = find_command(full_path, MAXSTRLEN, command_tab[i].name);
                 if (command_res == 0) { // command is found
+
+                    // Perform wildcard expansion
+                    args_t new_arg_tab;
+                    strcpy(new_arg_tab.args[0], command_tab[i].arg_tab.args[0]);
+                    int x = 1;
+                    // Go through the arguments
+                    for(int j = 1; j < command_tab[i].n_args; ++j) {
+                        // Fill in the new argtab
+                        // If there's a wild card, then expand it.
+                        if(strstr(command_tab[i].arg_tab.args[j], "*")) {
+                            // Make a copy of the name of the command
+                            char* regex_str = malloc(MAXSTRLEN);
+                            char* tmp = malloc(MAXSTRLEN);
+                            strcpy(tmp, (command_tab[i].arg_tab.args[j]));
+                            
+                            // Sanitize the string for regex sensitive characters
+                            regex_str = repl_str(tmp, ".", "\\."); 
+                            free(tmp);
+                            // convert the * to .* for the regex
+                            tmp = repl_str(regex_str, "*", ".*");
+                            free(regex_str);
+                            regex_str = tmp;
+
+                            // Search w/ regex all the filenames in the current folder
+
+                            // Prepare the regex
+                            regex_t r;
+                            compile_regex(&r, regex_str);
+                            char match_str[MAXSTRLEN];
+
+                            char* currentDir = get_current_dir_name();
+                            // Begin by opening the directory and reading the filenames to match with the command we're looking for.
+                            DIR *dip;
+                            struct dirent *dit;
+                            
+                            // If we can open the directory, then that's half the battle :P
+                            if((dip = opendir(currentDir)) == NULL) {
+                                fprintf(stderr, "Couldn't open the directory <%s>\n", currentDir);
+                            }
+
+                            while((dit = readdir(dip)) != NULL) {
+                                strcpy(match_str, "");
+                                match_regex(&r, dit->d_name, match_str);
+                                if(strcmp(match_str, "") != 0) {    
+                                    strcpy(new_arg_tab.args[x++], dit->d_name);
+                                }
+                            }
+                        } else {
+                            strcpy(new_arg_tab.args[x++], command_tab[i].arg_tab.args[j]);
+                        }
+                    }
+
+                    command_tab[i].n_args = x;
+                    command_tab[i].arg_tab = new_arg_tab;
+
+
+
                     int pid;
                     pid = fork();
 
@@ -262,8 +320,8 @@ int find_command(char* path_buf, size_t size, char* command) {
     if(search_path) {
         while(token && !match) {
             if(chdir(token)) {
-                fprintf(stderr, "Directory <%s> does not exist\n", token);
-                match = -1;
+                fprintf(stderr, "Directory <%s> contained in PATH does not exist\n", token);
+                continue;
             } else {
                 currentDir = get_current_dir_name();
                 // Begin by opening the directory and reading the filenames to match with the command we're looking for.
@@ -288,7 +346,6 @@ int find_command(char* path_buf, size_t size, char* command) {
             token = strtok(NULL, ":");      
         }    
     } else {
-        printf("Looking for %s\n", command);
         DIR *dip;
         struct dirent *dit;
         
@@ -320,5 +377,3 @@ int find_command(char* path_buf, size_t size, char* command) {
         return 1;
     }
 }
-
-

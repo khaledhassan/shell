@@ -27,7 +27,7 @@
 "&"                     { return AMPERSAND; }
 "\\"                    { return BACKSLASH; }
  
-[a-zA-Z0-9_:./~-]+      { yylval.str = strdup(yytext); return WORD; }
+[-a-zA-Z0-9_:./~*]+      { yylval.str = strdup(yytext); return WORD; }
 \"(\\.|[^\n"\\])*\"     { yytext++; yytext[yyleng-2] = 0; yylval.str = strdup(yytext); return WORD; }
 
 \n                      { return NEWLINE; }

@@ -161,7 +161,7 @@ void process_command(void){
                 ; // THIS SEMICOLON IS MEGA IMPORTANT DO NOT REMOVE OR THE WORLD STOPS SPINNING!
                   // I'M WARNING YOU, CHILDREN WILL CRY
                 char full_path[MAXSTRLEN];
-                if (findCommand(full_path, MAXSTRLEN, command_tab[i].name) == 0) { // command is found
+                if (find_command(full_path, MAXSTRLEN, command_tab[i].name) == 0) { // command is found
                     int pid;
                     pid = fork();
 
@@ -248,7 +248,7 @@ int find_command(char* path_buf, size_t size, char* command) {
     } else if(match == -1) {
         return -1;
     } else {
-        return 1
+        return 1;
     }
 }
 

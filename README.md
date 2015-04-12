@@ -6,8 +6,6 @@ Features NOT yet implemented
 ============================
 * I/O redirection (to and from files)
 * Built-in commands:
-    * `alias`
-        * `unalias name` - remove alias 
     * `setenv`
     * `printenv`
     * `unsetenv`
@@ -26,5 +24,6 @@ Features implemented
     * `alias`
         * `alias` (with no arguments) - print list of aliases 
         * `alias name word` - set new alias
+        * `unalias name` - remove alias 
     * `bye` (or `EOF`)
 

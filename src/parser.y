@@ -145,19 +145,35 @@ redir: LESSTHAN WORD {
             }
        }
      | ERRTOFILE WORD {
-            int outfd = open($2, O_WRONLY | O_TRUNC | O_CREAT);
-            if (outfd == -1) {
-                fprintf(stderr, "Cannot open output file: %s\n", $2);
+            if (redir_stderr != 0) {
+                // restore saved stderr in case it was redirected
+                dup2(saved_stderr, 2);
+                fprintf(stderr, "Cannot redirect stderr twice!\n");
                 abort_command = 1;
             } else {
-                close(STDERR_FILENO);
-                dup(outfd);
-                close(outfd);
+                redir_stderr = 1;
+                int outfd = open($2, O_WRONLY | O_TRUNC | O_CREAT);
+                if (outfd == -1) {
+                    fprintf(stderr, "Cannot open output file: %s\n", $2);
+                    abort_command = 1;
+                } else {
+                    close(STDERR_FILENO);
+                    dup(outfd);
+                    close(outfd);
+                }
             }
        }
      | ERRTOOUT {
-            close(STDERR_FILENO);
-            dup(STDOUT_FILENO);
+            if (redir_stderr != 0) {
+                // restore saved stderr in case it was redirected
+                dup2(saved_stderr, 2);
+                fprintf(stderr, "Cannot redirect stderr twice!\n");
+                abort_command = 1;
+            } else {
+                redir_stderr = 1;
+                close(STDERR_FILENO);
+                dup(STDOUT_FILENO);
+            }
        }
      ;
 

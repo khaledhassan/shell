@@ -24,11 +24,12 @@ alias_t alias_tab[MAXALIAS];
 env_t env_tab[MAXENV];
 int abort_command;
 int run_in_background;
+int redir_stderr;
+int saved_stderr;
 
 //-----------------------------------
 // Values not declared extern
 //-----------------------------------
-int saved_stderr;
 
 //-----------------------------------
 // Functions
@@ -98,6 +99,7 @@ void init_scanner_and_parser(void) {
 
     // restore saved stderr in case it was redirected
     dup2(saved_stderr, 2);
+    redir_stderr = 0;
 }
 
 int get_command(void){

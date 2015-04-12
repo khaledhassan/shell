@@ -5,7 +5,6 @@ Khaled Hassan and Mason Turner
 Features NOT yet implemented
 ============================
 * I/O redirection (to and from files)
-* Other commands (not built-in)
 * Environment variable expansion
 * Wildcard matching
 * Extra credit: Tilde expansion
@@ -25,4 +24,6 @@ Features implemented
     * `setenv`
     * `printenv`
     * `unsetenv`
+* Other commands (not built-in)
+
 

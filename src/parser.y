@@ -36,7 +36,12 @@ line: NEWLINE { YYACCEPT; }
     ;
 
 commands: command args { }
-        | commands PIPE command args { }
+        | commands PIPE command args { 
+            int pipe_tab[2];
+            pipe(pipe_tab);
+            command_tab[num_commands-2].out_fd = pipe_tab[1];
+            command_tab[num_commands-1].in_fd = pipe_tab[0];
+        }
         ;
 
 command: builtin

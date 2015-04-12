@@ -64,16 +64,18 @@ void shell_init(void) {
     env_tab[1].used = 1;
 
     // disable anything to kill shell
-    sigset(SIGINT, SIG_IGN);
-    //sigset(SIGINT, ignore_CTRLC); // TODO: custom handler should clean up token stream? Lex/Yacc don't like something
+    sigset(SIGINT, SIG_IGN); // TODO: custom handler should clean up token stream? Lex/Yacc don't like something
 
 }
+
 
 // Reinitilaizes all tables
 void init_scanner_and_parser(void) {
     // Clear the command table
     for(int i = 0; i != MAXCOMMANDS; ++i) {
         strcpy(command_tab[i].name, "");
+        if(command_tab[i].in_fd != 0) close(command_tab[i].in_fd);
+        if(command_tab[i].out_fd != 1) close(command_tab[i].out_fd);
         command_tab[i].in_fd = 0; // TODO: What should the default be? 
         command_tab[i].out_fd = 0;
         // clear the arguments

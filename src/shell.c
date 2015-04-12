@@ -53,7 +53,7 @@ int main(void){
                 break;
             case SYSERR:
                 fprintf(stderr, "get_command() failed... cleaning up\n");
-                while (yylex() != 0) {} // eat commands until yylex returns 0?
+                while (yylex() != NEWLINE) {} // eat commands until yylex returns 0?
                 break;
             default:
                 break; // TODO: what goes here?

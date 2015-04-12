@@ -157,11 +157,10 @@ void process_command(void){
             case c_unsetenv:
                 bi_unsetenv(&command_tab[i]);
                 break;
-            case c_external:
-                ; // THIS SEMICOLON IS MEGA IMPORTANT DO NOT REMOVE OR THE WORLD STOPS SPINNING!
-                  // I'M WARNING YOU, CHILDREN WILL CRY
+            case c_external: {
                 char full_path[MAXSTRLEN];
-                if (find_command(full_path, MAXSTRLEN, command_tab[i].name) == 0) { // command is found
+                int command_res = find_command(full_path, MAXSTRLEN, command_tab[i].name);
+                if (command_res == 0) { // command is found
                     int pid;
                     pid = fork();
 
@@ -179,7 +178,13 @@ void process_command(void){
 
                     wait(0);
  
+                } else if(command_res == -1) {
+                    continue;
+                } else if(command_res == 1) {
+                    printf("Command '%s' not found.\n", command_tab[i].name);
                 }
+            }
+                
                 break;
         }
 
@@ -210,34 +215,62 @@ int find_command(char* path_buf, size_t size, char* command) {
     char* token = strtok(path, ":");
     char* originalDir = get_current_dir_name();
     char* currentDir = get_current_dir_name();
-    int match = 0;
-    while(token && !match) {
-        if(chdir(token)) {
-            fprintf(stderr, "Directory <%s> does not exist\n", token);
-            match = -1;
-        } else {
-            currentDir = get_current_dir_name();
-            // Begin by opening the directory and reading the filenames to match with the command we're looking for.
-            DIR *dip;
-            struct dirent *dit;
-            
-            // If we can open the directory, then that's half the battle :P
-            if((dip = opendir(currentDir)) == NULL) {
-                fprintf(stderr, "Couldn't open the directory <%s>\n", currentDir);
-                match = -1;
-            }
+    int match = 0, search_path = 1;
 
-            while((dit = readdir(dip)) != NULL) {
-                if(!strcmp(command, dit->d_name)) {
-                    snprintf(path_buf, size, "%s/%s", currentDir, dit->d_name);
-                    match = 1;
-                    break;
+    if(strlen(command) > 2) {
+        if(command[0] == '.' && command[1] == '/') {
+            search_path = 0;
+            command += 2;
+        }
+    }
+    if(search_path) {
+        while(token && !match) {
+            if(chdir(token)) {
+                fprintf(stderr, "Directory <%s> does not exist\n", token);
+                match = -1;
+            } else {
+                currentDir = get_current_dir_name();
+                // Begin by opening the directory and reading the filenames to match with the command we're looking for.
+                DIR *dip;
+                struct dirent *dit;
+                
+                // If we can open the directory, then that's half the battle :P
+                if((dip = opendir(currentDir)) == NULL) {
+                    fprintf(stderr, "Couldn't open the directory <%s>\n", currentDir);
+                    match = -1;
+                }
+
+                while((dit = readdir(dip)) != NULL) {
+                    if(!strcmp(command, dit->d_name)) {
+                        snprintf(path_buf, size, "%s/%s", currentDir, dit->d_name);
+                        match = 1;
+                        break;
+                    }
                 }
             }
+            free(currentDir);
+            token = strtok(NULL, ":");      
+        }    
+    } else {
+        printf("Looking for %s\n", command);
+        DIR *dip;
+        struct dirent *dit;
+        
+        // If we can open the directory, then that's half the battle :P
+        if((dip = opendir(currentDir)) == NULL) {
+            fprintf(stderr, "Couldn't open the directory <%s>\n", currentDir);
+            match = -1;
         }
-        free(currentDir);
-        token = strtok(NULL, ":");      
+
+        while((dit = readdir(dip)) != NULL) {
+            if(!strcmp(command, dit->d_name)) {
+                snprintf(path_buf, size, "%s/%s", currentDir, dit->d_name);
+                match = 1;
+                break;
+            }
+        }
     }
+    
     if(chdir(originalDir)) {
         fprintf(stderr, "Could not change back to orignal directory\n");
     }

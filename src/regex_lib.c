@@ -59,7 +59,7 @@ int match_regex(regex_t * r, const char * to_match, char* first_result)
     return 0;
 }
 
-// Function used with permission of http://creativeandcritical.net/str-replace-c
+// Function used with permission of <http://creativeandcritical.net/str-replace-c>
 char *repl_str(const char *str, const char *old, const char *new) {
 
     /* Adjust each of the below values to suit your needs. */

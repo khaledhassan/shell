@@ -2,6 +2,12 @@
 
 Khaled Hassan and Mason Turner
 
+How to run
+==========
+`cd src`
+`make`
+`./shell`
+
 Features NOT yet implemented
 ============================
 * Environment variable expansion

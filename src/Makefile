@@ -1,7 +1,6 @@
 CFLAGS=-Wall -Wextra -std=gnu99
 DEBUG_FLAGS=-g
-CC=colorgcc
-
+CC=gcc
 
 all: shell args
 

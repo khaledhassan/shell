@@ -91,35 +91,40 @@ int bi_unalias(command_t* cmd){
 }
 
 int bi_setenv(command_t* cmd){
-    // first look for variable
-    int pos = 0;
-    int found = 0;
-
-    while (pos < MAXENV && found == 0) {
-        if (env_tab[pos].used == 1 && strcmp(env_tab[pos].name, cmd->arg_tab.args[0]) == 0 ) {
-            found = 1;
-        } else {
-            ++pos;
-        }
-    }
-    // if found, update it
-    if (found == 1) {
-        strcpy(env_tab[pos].value, cmd->arg_tab.args[1]);
-        return OK;
+    if (cmd->n_args != 2) {
+        fprintf(stderr, "setenv expects exactly 2 arguments, %d given\n", cmd->n_args);
+        return SYSERR;
     } else {
-    // if not found, add it
-        pos = 0;
-        while (pos < MAXENV) {
-            if (env_tab[pos].used == 0) {
-                env_tab[pos].used = 1;
-                strcpy(env_tab[pos].name, cmd->arg_tab.args[0]);
-                strcpy(env_tab[pos].value, cmd->arg_tab.args[1]);
-                return OK;
+        // first look for variable
+        int pos = 0;
+        int found = 0;
+
+        while (pos < MAXENV && found == 0) {
+            if (env_tab[pos].used == 1 && strcmp(env_tab[pos].name, cmd->arg_tab.args[0]) == 0 ) {
+                found = 1;
             } else {
                 ++pos;
             }
         }
-        return SYSERR; // could not find space
+        // if found, update it
+        if (found == 1) {
+             strcpy(env_tab[pos].value, cmd->arg_tab.args[1]);
+             return OK;
+        } else {
+        // if not found, add it
+            pos = 0;
+            while (pos < MAXENV) {
+                if (env_tab[pos].used == 0) {
+                    env_tab[pos].used = 1;
+                    strcpy(env_tab[pos].name, cmd->arg_tab.args[0]);
+                    strcpy(env_tab[pos].value, cmd->arg_tab.args[1]);
+                    return OK;
+                 } else {
+                     ++pos;
+                 }
+            }
+            return SYSERR; // could not find space
+        }
     }
 }
 

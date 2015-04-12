@@ -116,8 +116,7 @@ args: /* no arguments */
       }
     ;
 
-redir: /* no redirection -- can be removed if this causes problems with no arguments case above */ 
-     | LESSTHAN WORD {
+redir: LESSTHAN WORD {
             int infd = open($2, O_RDONLY);
             if (infd == -1) {
                 fprintf(stderr, "Cannot open input file: %s\n", $2);

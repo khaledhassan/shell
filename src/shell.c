@@ -15,6 +15,9 @@
 #include "y.tab.h"
 #include "regex_lib.h"
 
+// suppress warning
+int yylex(void);
+
 //-----------------------------------
 // Values declared extern
 //-----------------------------------

@@ -62,6 +62,8 @@ typedef struct {
 
 extern env_t env_tab[MAXENV];
 
+extern int abort_command;
+
 //-----------------------------------
 // Function Prototypes
 //-----------------------------------

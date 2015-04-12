@@ -5,7 +5,8 @@ Khaled Hassan and Mason Turner
 Features NOT yet implemented
 ============================
 * I/O redirection
-    * to and from files
+    * stderr to stdout (code written, needs test)
+    * stderr to file (code written, needs test)
 * Environment variable expansion
 * Wildcard matching
 * Extra credit: Tilde expansion
@@ -28,5 +29,6 @@ Features implemented
 * Other commands (not built-in)
 * I/O redirection
     * from command to command
+    * to and from files
 
 

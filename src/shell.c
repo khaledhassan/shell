@@ -22,7 +22,12 @@ int num_commands;
 command_t command_tab[MAXCOMMANDS];
 alias_t alias_tab[MAXALIAS];
 env_t env_tab[MAXENV];
+int abort_command;
 
+//-----------------------------------
+// Values not declared extern
+//-----------------------------------
+int saved_stderr;
 
 //-----------------------------------
 // Functions
@@ -66,11 +71,15 @@ void shell_init(void) {
     // disable anything to kill shell
     sigset(SIGINT, SIG_IGN); // TODO: custom handler should clean up token stream? Lex/Yacc don't like something
 
+    // save original stderr so that we can restore it at the end of a command that redirects it
+    saved_stderr = dup(2);
+
 }
 
 
 // Reinitilaizes all tables
 void init_scanner_and_parser(void) {
+    abort_command = 0;
     // Clear the command table
     for(int i = 0; i != MAXCOMMANDS; ++i) {
         strcpy(command_tab[i].name, "");
@@ -83,6 +92,9 @@ void init_scanner_and_parser(void) {
         command_tab[i].n_args = 0;
     }
     num_commands = 0;
+
+    // restore saved stderr in case it was redirected
+    dup2(saved_stderr, 2);
 }
 
 int get_command(void){
@@ -118,6 +130,10 @@ void print_prompt(void) {
     free(path);
 }
 void process_command(void){
+    if (abort_command != 0) {
+        return;
+    }
+
     /* Policy: if a builtin command is present, it must be the only command present */
     int builtin_count = 0;
     for (int i = 0; i != num_commands; ++i) {

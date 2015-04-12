@@ -21,6 +21,7 @@
 
 /* metacharacters */
 %token LESSTHAN GREATERTHAN PIPE AMPERSAND BACKSLASH NEWLINE 
+%token ERRTOFILE ERRTOOUT
 %token <str> SETENV PRINTENV UNSETENV CD ALIAS UNALIAS 
 %token QUIT
 %token <str> WORD
@@ -46,7 +47,8 @@ commands: command args { }
             pipe(pipe_tab);
             command_tab[num_commands-2].out_fd = pipe_tab[1];
             command_tab[num_commands-1].in_fd = pipe_tab[0];
-        }
+         }
+        | commands redir { }
         ;
 
 command: builtin
@@ -57,21 +59,7 @@ command: builtin
             this_command->n_args = 1;
             strcpy(this_command->arg_tab.args[0], $1); // non-builtins need argv[0] to be their binary name?
             num_commands++;
-}
-     /*
-       | WORD PIPE command { 
-            printf("%s pipe into %s\n", $1, $3); 
          }
-       | WORD LESSTHAN WORD {
-            printf("%s into %s\n", $3, $1);
-         }
-       | WORD GREATERTHAN WORD {
-            printf("%s into %s\n", $1, $3);
-         }
-       | WORD GREATERTHAN GREATERTHAN WORD {
-            printf("%s appending into %s\n", $1, $4);
-         }
-     */
        ;
 
 builtin: SETENV {
@@ -125,7 +113,49 @@ args: /* no arguments */
         strcpy(this_command_argtab->args[this_command->n_args], $2);
         this_command->n_args++;
       }
+    ;
 
+redir: /* no redirection -- can be removed if this causes problems with no arguments case above */ 
+     | LESSTHAN WORD {
+            int infd = open($2, O_RDONLY);
+            if (infd == -1) {
+                fprintf(stderr, "Cannot open input file: %s\n", $2);
+                abort_command = 1;
+            } else {
+                command_tab[0].in_fd = infd;
+            }
+       }
+     | GREATERTHAN WORD {
+            int outfd = open($2, O_WRONLY | O_TRUNC | O_CREAT);
+            if (outfd == -1) {
+                fprintf(stderr, "Cannot open output file: %s\n", $2);
+                abort_command = 1;
+            } else {
+                command_tab[num_commands-1].out_fd = outfd;
+            }
+       }
+     | GREATERTHAN GREATERTHAN WORD {
+            int outfd = open($3, O_WRONLY | O_APPEND | O_CREAT);
+            if (outfd == -1) {
+                fprintf(stderr, "Cannot open output file: %s\n", $3);
+                abort_command = 1;
+            } else {
+                command_tab[num_commands-1].out_fd = outfd;
+            }
+       }
+     | ERRTOFILE WORD {
+            int outfd = open($2, O_WRONLY | O_TRUNC | O_CREAT);
+            if (outfd == -1) {
+                fprintf(stderr, "Cannot open output file: %s\n", $2);
+                abort_command = 1;
+            } else {
+                close(STDERR_FILENO);
+                dup(outfd);
+                close(outfd);
+            }
+       }
+     | ERRTOOUT { printf("error going to stdout\n"); }
+     ;
 
 %%
 

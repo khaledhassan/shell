@@ -17,6 +17,9 @@
 "unalias"               { yylval.str = strdup(yytext); return UNALIAS; }
 "bye"                   { return QUIT; }   
 <<EOF>>                 { return QUIT; }
+                        /* stderr redirects */
+"2>"                    { return ERRTOFILE; }
+"2>&1"                  { return ERRTOOUT; }
                         /* Metacharacters */
 "<"                     { return LESSTHAN; }
 ">"                     { return GREATERTHAN; }

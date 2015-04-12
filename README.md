@@ -8,6 +8,7 @@ Features NOT yet implemented
     * stderr to stdout (code written, needs test)
     * stderr to file (code written, needs test)
 * Environment variable expansion
+* Alias expansion
 * Wildcard matching
 * Extra credit: Tilde expansion
 * Extra credit: File name completion

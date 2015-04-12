@@ -39,7 +39,7 @@ int match_regex(regex_t * r, const char * to_match, char* first_result)
     while (1) {
         int i = 0;
         int nomatch = regexec (r, p, n_matches, m, 0);
-        if (nomatch) {
+        if (nomatch || *p == NULL) {
             return nomatch;
         }
         for (i = 0; i < n_matches; i++) {

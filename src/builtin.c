@@ -33,26 +33,31 @@ int bi_alias(command_t* cmd){
         }
         return OK;
     } else if (cmd->n_args == 2) { // set alias
-        int pos = 0;
-        int found = 0;
-        while (pos < MAXALIAS && found == 0) {
-            if (alias_tab[pos].used == 0) {
-                found = 1;
-            } else {
-                ++pos;
+        int pos = find_alias(cmd->arg_tab.args[0]);
+        if (pos == -1) { // alias not found, insert
+            pos = 0;
+            int found = 0;
+            while (pos < MAXALIAS && found == 0) {
+                if (alias_tab[pos].used == 0) {
+                    found = 1;
+                } else {
+                    ++pos;
+                }
             }
-        }
 
-        if (found == 0) {
-            fprintf(stderr, "alias: cannot set new alias -- table full?\n");
-            return SYSERR;
-        } else {
-            alias_tab[pos].used = 1;
-            strcpy(alias_tab[pos].name, cmd->arg_tab.args[0]);
+            if (found == 0) {
+                fprintf(stderr, "alias: cannot set new alias -- table full?\n");
+                return SYSERR;
+            } else {
+                alias_tab[pos].used = 1;
+                strcpy(alias_tab[pos].name, cmd->arg_tab.args[0]);
+                strcpy(alias_tab[pos].value, cmd->arg_tab.args[1]);
+                return OK;
+            }
+        } else { // alias found, update
             strcpy(alias_tab[pos].value, cmd->arg_tab.args[1]);
             return OK;
         }
-
     } else { // wrong number of args
         fprintf(stderr, "alias expects exactly 0 or 2 arguments, %d provided\n", cmd->n_args);
         return SYSERR;

@@ -173,7 +173,7 @@ void process_command(void){
                         argv[argv_size-1] = NULL;
 
                         execv(full_path, argv);
-                        exit(1);
+                        exit(0);
                     } 
 
                     wait(0);
@@ -184,7 +184,6 @@ void process_command(void){
                     printf("Command '%s' not found.\n", command_tab[i].name);
                 }
             }
-                
                 break;
         }
 

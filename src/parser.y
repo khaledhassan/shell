@@ -37,12 +37,17 @@
 lines: line | lines line
 
 line: NEWLINE { YYACCEPT; }
-    | error NEWLINE
+    | error NEWLINE { abort_command = 1; }
     | commands NEWLINE { YYACCEPT; }
     | QUIT { printf("cya\n"); exit(0);}
     ;
 
-commands: command args { }
+commands: command args {
+/*                int alias_pos = find_alias($1);
+                if (alias_pos != -1) { // alias found
+                    yyUnput(alias_tab[alias_pos].value, strlen(alias_tab[alias_pos].value));
+                }
+*/          }
         | commands PIPE command args { 
             int pipe_tab[2];
             pipe(pipe_tab);

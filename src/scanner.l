@@ -4,6 +4,7 @@
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
+    #include "shell.h"
     void yyerror(const char *s);
 %}
 
@@ -28,12 +29,26 @@
 "&"                     { return AMPERSAND; }
 "\\"                    { return BACKSLASH; }
  
-[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+      { yylval.str = strdup(yytext); return WORD; }
+[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ { 
+                            yylval.str = strdup(yytext); 
+
+                            int alias_pos = find_alias(yylval.str);
+
+                            if (alias_pos != -1) {
+                                int value_len = strlen(alias_tab[alias_pos].value);
+                                for (int i = value_len - 1; i >= 0; --i) {
+                                    unput(alias_tab[alias_pos].value[i]);
+                                }
+                                free(yylval.str);
+                            } else {
+                                return WORD;
+                            } 
+                        }
 \"(\\.|[^\n"\\])*\"     { yytext++; yytext[yyleng-2] = 0; yylval.str = strdup(yytext); return WORD; }
 
 \n                      { return NEWLINE; }
 [ \t]+                  ; /* Eat whitespace */
 
- /*. { yyerror("unrecognized character"); return 0; }*/
+ /* . { yyerror("unrecognized character"); return 0; } */
 %%
 

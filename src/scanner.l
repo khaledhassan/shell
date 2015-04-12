@@ -8,15 +8,15 @@
     void yyerror(const char *s);
 %}
 
-
+%s SAWALIAS
 %%
                         /* Built-ins */
 "setenv"                { yylval.str = strdup(yytext); return SETENV; }
 "printenv"              { yylval.str = strdup(yytext); return PRINTENV; }
 "unsetenv"              { yylval.str = strdup(yytext); return UNSETENV; }
 "cd"                    { yylval.str = strdup(yytext); return CD; }
-"alias"                 { yylval.str = strdup(yytext); return ALIAS; }
-"unalias"               { yylval.str = strdup(yytext); return UNALIAS; }
+"alias"                 { BEGIN(SAWALIAS); yylval.str = strdup(yytext); return ALIAS; }
+"unalias"               { BEGIN(SAWALIAS); yylval.str = strdup(yytext); return UNALIAS; }
 "bye"                   { return QUIT; }   
 <<EOF>>                 { return QUIT; }
                         /* stderr redirects */
@@ -29,7 +29,13 @@
 "&"                     { return AMPERSAND; }
 "\\"                    { return BACKSLASH; }
  
-[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ { 
+<SAWALIAS>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
+                            yylval.str = strdup(yytext);
+                            return WORD;
+                        }
+
+
+<INITIAL>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
                             yylval.str = strdup(yytext); 
 
                             int alias_pos = find_alias(yylval.str);
@@ -44,9 +50,10 @@
                                 return WORD;
                             } 
                         }
+
 \"(\\.|[^\n"\\])*\"     { yytext++; yytext[yyleng-2] = 0; yylval.str = strdup(yytext); return WORD; }
 
-\n                      { return NEWLINE; }
+\n                      { BEGIN(INITIAL); return NEWLINE; }
 [ \t]+                  ; /* Eat whitespace */
 
  /* . { yyerror("unrecognized character"); return 0; } */

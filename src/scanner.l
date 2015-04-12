@@ -12,9 +12,9 @@
 %s SAWBRACE
 %%
                         /* Built-ins */
-"setenv"                { yylval.str = strdup(yytext); return SETENV; }
+"setenv"                { BEGIN(SAWALIAS); yylval.str = strdup(yytext); return SETENV; }
 "printenv"              { yylval.str = strdup(yytext); return PRINTENV; }
-"unsetenv"              { yylval.str = strdup(yytext); return UNSETENV; }
+"unsetenv"              { BEGIN(SAWALIAS); yylval.str = strdup(yytext); return UNSETENV; }
 "cd"                    { yylval.str = strdup(yytext); return CD; }
 "alias"                 { BEGIN(SAWALIAS); yylval.str = strdup(yytext); return ALIAS; }
 "unalias"               { BEGIN(SAWALIAS); yylval.str = strdup(yytext); return UNALIAS; }

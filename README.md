@@ -12,6 +12,7 @@ Features NOT yet implemented
 ============================
 * Wildcard matching
     * other directories/paths (is this even necessary?)
+    * single character `?`
 * Extra credit: Tilde expansion
 * Extra credit: File name completion
 

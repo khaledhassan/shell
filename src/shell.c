@@ -185,9 +185,13 @@ void ignoreCTRLC(int sig) {
     printf("Type 'bye' to exit\n");
     signal(SIGINT, ignoreCTRLC);
 }
-// inputs
-//  path_buf: modifies this to contain the path to the executable
-//  size: size of the buffer being passed in 
+//  findCommand
+//  inputs:
+//      path_buf: buffer will contain the path to the command if found
+//      size: size of the buffer being passed in 
+//      command: the name of the command/program being called
+//  outputs:
+//      returns 0 if command was found, 1 if not found, -1 for error.
 int findCommand(char* path_buf, size_t size, char* command) {
     //make a copy of the PATH variable
     char path[MAXSTRLEN];
@@ -219,12 +223,9 @@ int findCommand(char* path_buf, size_t size, char* command) {
                     break;
                 }
             }
-
         }
-
         free(currentDir);
-        token = strtok(NULL, ":");
-        
+        token = strtok(NULL, ":");      
     }
     if(chdir(originalDir)) {
         fprintf(stderr, "Could not change back to orignal directory\n");
@@ -233,8 +234,10 @@ int findCommand(char* path_buf, size_t size, char* command) {
 
     if(match == 1) {
         return 0;
+    } else if(match == -1) {
+        return -1;
     } else {
-        return 1;
+        return 1
     }
 }
 

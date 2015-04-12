@@ -10,10 +10,8 @@ How to run
 
 Features NOT yet implemented
 ============================
-* Environment variable expansion
-* Alias expansion
 * Wildcard matching
-    * other directories/paths 
+    * other directories/paths (is this even necessary?)
 * Extra credit: Tilde expansion
 * Extra credit: File name completion
 
@@ -39,5 +37,6 @@ Features implemented
     * stderr to file (some testing done, more would be nice)
 * Wildcard matching
     * current directory only (except for a single `*`)
-
+* Environment variable expansion
+* Alias expansion
 

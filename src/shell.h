@@ -79,5 +79,7 @@ void process_command(void);
 void recover_from_errors(void);
 void ignoreCTRLC(int);
 int find_command(char*, size_t, char*);
+int find_alias(char* alias_name);
+int find_env(char* env_name);
 
 #endif // SHELL_H_

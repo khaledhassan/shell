@@ -53,7 +53,7 @@ int main(void){
                 break;
             case SYSERR:
                 fprintf(stderr, "get_command() failed... cleaning up\n");
-                while (yylex() != 0) {} // eat commands until yylex returns 0?
+                while (yylex() != NEWLINE) {} // eat commands until yylex returns 0?
                 break;
             default:
                 break; // TODO: what goes here?
@@ -422,5 +422,21 @@ int find_alias(char* alias_name) {
     }
 }
 
+int find_env(char* env_name) {
+    int pos = 0;
+    int found = 0;
+    while (pos < MAXENV && found == 0) {
+        if (env_tab[pos].used == 1 && strcmp(env_tab[pos].name, env_name) == 0) {
+            found = 1;
+        } else {
+            ++pos;
+        }
+    }
 
+    if (found) {
+        return pos;
+    } else {
+        return -1;
+    }
+}
 

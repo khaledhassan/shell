@@ -324,4 +324,21 @@ int find_command(char* path_buf, size_t size, char* command) {
     }
 }
 
+int find_alias(char* alias_name) {
+    int pos = 0;
+    int found = 0;
+    while (pos < MAXALIAS && found == 0) {
+        if (alias_tab[pos].used == 1 && strcmp(alias_tab[pos].name, alias_name) == 0) {
+            found = 1;
+        } else {
+            ++pos;
+        }
+    }
+
+    if (found) {
+        return pos;
+    } else {
+        return -1;
+    }
+}
 

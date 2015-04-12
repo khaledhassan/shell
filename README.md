@@ -40,4 +40,7 @@ Features implemented
     * current directory only (except for a single `*`)
 * Environment variable expansion
 * Alias expansion
+    * Limitations:
+        * Expansion done on any word that matches an alias 
+        * No loop detection
 

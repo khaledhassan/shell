@@ -31,7 +31,7 @@ int saved_stderr;
 //-----------------------------------
 // Values not declared extern
 //-----------------------------------
-
+int is_interactive;
 //-----------------------------------
 // Functions
 //-----------------------------------
@@ -41,7 +41,9 @@ int main(void){
     shell_init();
 
     while(1){
-        print_prompt();
+        if (is_interactive == 1) {
+            print_prompt();
+        }
         switch (get_command()) {
             case OK:
                 process_command();
@@ -78,6 +80,8 @@ void shell_init(void) {
     // save original stderr so that we can restore it at the end of a command that redirects it
     saved_stderr = dup(2);
 
+    // am I running with some file as stdin?
+    is_interactive = isatty(STDIN_FILENO);
 }
 
 

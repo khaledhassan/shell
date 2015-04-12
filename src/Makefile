@@ -1,7 +1,6 @@
 CFLAGS=-Wall -Wextra -std=gnu99
 DEBUG_FLAGS=-g
-CC=colorgcc
-
+CC=gcc
 
 all: shell args
 
@@ -9,8 +8,8 @@ args: args.c
 	$(CC) $(CFLAGS) args.c -o args
 
 .PHONY: debug
-debug: shell.c lex.yy.c y.tab.c builtin.c
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) shell.c lex.yy.c y.tab.c builtin.c -o shell
+debug: shell.c lex.yy.c y.tab.c builtin.c regex_lib.c
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) shell.c lex.yy.c y.tab.c builtin.c regex_lib.c -o shell
 
 
 shell: shell.c lex.yy.c y.tab.c builtin.c regex_lib.c

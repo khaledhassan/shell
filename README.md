@@ -14,6 +14,7 @@ Features NOT yet implemented
     * other directories/paths (is this even necessary?)
     * single character `?`
 * Extra credit: Tilde expansion
+    * works when at the beginning of a token; should be ignored in other places, but currently isn't
 * Extra credit: File name completion
 
 Features implemented
@@ -41,6 +42,6 @@ Features implemented
 * Environment variable expansion
 * Alias expansion
     * Limitations:
-        * Expansion done on any word that matches an alias 
+        * ~~Expansion done on any word that matches an alias~~ fixed: only expands on first token
         * No loop detection
 

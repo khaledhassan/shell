@@ -78,12 +78,6 @@
                                     unput(env_tab[env_pos].value[i]);
                                 }
                                 free(yylval.str);
-                            } else if ((first_token == 1) && (alias_pos != -1)) {
-                                int value_len = strlen(alias_tab[alias_pos].value);
-                                for (int i = value_len - 1; i >= 0; --i) {
-                                    unput(alias_tab[alias_pos].value[i]);
-                                }
-                                free(yylval.str);
                             } else {
                                 first_token = 0;
                                 return WORD;

@@ -336,13 +336,20 @@ int find_command(char* path_buf, size_t size, char* command) {
     char* originalDir = get_current_dir_name();
     char* currentDir = get_current_dir_name();
     int match = 0, search_path = 1;
-
-    if(strlen(command) > 2) {
-        if(command[0] == '.' && command[1] == '/') {
-            search_path = 0;
-            command += 2;
-        }
+    regex_t r;
+    char regex_str[] = "^(.*)/";
+    compile_regex(&r, regex_str);
+    char match_str[MAXSTRLEN];
+    strcpy(match_str, "");
+   
+    // Do regex for path before command
+    match_regex(&r, command, match_str);
+    if(strcmp(match_str, "") != 0) {
+        chdir(match_str);
+        command += strlen(match_str);
+        search_path = 0;
     }
+
     if(search_path) {
         while(token && !match) {
             if(chdir(token)) {
@@ -374,7 +381,7 @@ int find_command(char* path_buf, size_t size, char* command) {
     } else {
         DIR *dip;
         struct dirent *dit;
-        
+        currentDir = get_current_dir_name();
         // If we can open the directory, then that's half the battle :P
         if((dip = opendir(currentDir)) == NULL) {
             fprintf(stderr, "Couldn't open the directory <%s>\n", currentDir);
@@ -388,6 +395,7 @@ int find_command(char* path_buf, size_t size, char* command) {
                 break;
             }
         }
+        free(currentDir);
     }
     
     if(chdir(originalDir)) {

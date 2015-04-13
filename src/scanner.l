@@ -35,6 +35,7 @@
                                  fprintf(stderr, "error: HOME environment variable does not exist!\n");
                              } else {
                                  int value_len = strlen(env_tab[env_pos].value);
+                                 unput('/'); //trailing slash at the end of home directory
                                  for (int i = value_len - 1; i >= 0; --i) {
                                      unput(env_tab[env_pos].value[i]);
                                  }

@@ -30,7 +30,7 @@ int abort_command;
 int run_in_background;
 int redir_stderr;
 int saved_stderr;
-
+int first_token;
 //-----------------------------------
 // Values not declared extern
 //-----------------------------------
@@ -90,6 +90,7 @@ void shell_init(void) {
 
 // Reinitilaizes all tables
 void init_scanner_and_parser(void) {
+    first_token = 1;
     run_in_background = 0;
     abort_command = 0;
     // Clear the command table

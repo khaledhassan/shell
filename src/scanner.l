@@ -29,17 +29,27 @@
 "|"                     { return PIPE; }
 "&"                     { return AMPERSAND; }
 "\\"                    { return BACKSLASH; }
-
+"~"[-\[\]a-zA-Z0-9_:.,/!@#\$%\^\(\)?\'*]?                     {
+                             int env_pos = find_env("HOME");
+                             if (env_pos == -1) {
+                                 fprintf(stderr, "error: HOME environment variable does not exist!\n");
+                             } else {
+                                 int value_len = strlen(env_tab[env_pos].value);
+                                 for (int i = value_len - 1; i >= 0; --i) {
+                                     unput(env_tab[env_pos].value[i]);
+                                 }
+                             }
+                        }
 "${"                    { BEGIN(SAWBRACE); }
 <SAWBRACE>"}"           { BEGIN(INITIAL); }
 
-<SAWALIAS>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
+<SAWALIAS>[-\[\]a-zA-Z0-9_:.,/!@#\$%\^\(\)?\'*]+ {
                             yylval.str = strdup(yytext);
                             return WORD;
                         }
 
 
-<INITIAL>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
+<INITIAL>[-\[\]a-zA-Z0-9_:.,/!@#\$%\^\(\)?\'*]+ {
                             yylval.str = strdup(yytext);
 
                             int alias_pos = find_alias(yylval.str);
@@ -56,7 +66,7 @@
                             } 
                         }
 
-<SAWBRACE>[-\[\]a-zA-Z0-9_:.,/~!@#\$%\^\(\)?\'*]+ {
+<SAWBRACE>[-\[\]a-zA-Z0-9_:.,/!@#\$%\^\(\)?\'*]+ {
                             yylval.str = strdup(yytext);
 
                             int env_pos = find_env(yylval.str);

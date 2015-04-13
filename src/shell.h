@@ -66,6 +66,7 @@ extern int abort_command;
 extern int run_in_background;
 extern int redir_stderr;
 extern int saved_stderr;
+extern int first_token;
 
 //-----------------------------------
 // Function Prototypes

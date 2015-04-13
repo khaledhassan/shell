@@ -30,8 +30,6 @@
 
 %start lines
 
-%define parse.error verbose
-
 %%
 
 lines: line | lines line
